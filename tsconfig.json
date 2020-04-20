@@ -1,0 +1,12 @@
+{
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "build",
+        "declaration": true,
+        "sourceMap": true,
+        "module": "CommonJS",
+        "target": "ES6"
+    }
+}
