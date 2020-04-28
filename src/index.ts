@@ -9,6 +9,8 @@ import { authentification } from './middlewares'
 const dotenv = require('dotenv')
 dotenv.config()
 
+const port = process.env.PORT || 9000;
+
 let spotifyApi = new SpotifyWebApi({
     clientId : process.env.CLIENT_ID,
     clientSecret : process.env.CLIENT_SECRET,
@@ -71,7 +73,7 @@ app.post('/user', (req, res) => {
     res.send('ok')
 })
 
-app.listen(9000, () => {
+app.listen(port, () => {
     console.log('🚀 Server is running')
 })
 
