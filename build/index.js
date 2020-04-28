@@ -8,6 +8,7 @@ const qs = require("querystring");
 const middlewares_1 = require("./middlewares");
 const dotenv = require('dotenv');
 dotenv.config();
+const port = process.env.PORT || 9000;
 let spotifyApi = new SpotifyWebApi({
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
@@ -57,7 +58,7 @@ app.post('/user', (req, res) => {
     console.log(req.body);
     res.send('ok');
 });
-app.listen(9000, () => {
+app.listen(port, () => {
     console.log('🚀 Server is running');
 });
 //# sourceMappingURL=index.js.map
