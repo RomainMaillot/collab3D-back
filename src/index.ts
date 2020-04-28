@@ -10,6 +10,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const port = process.env.PORT || 9000;
+const uri = process.env.PORT ? 'https://3d-dj.netlify.app/' : 'http://localhost:3000/'
 
 let spotifyApi = new SpotifyWebApi({
     clientId : process.env.CLIENT_ID,
@@ -21,7 +22,7 @@ const redirectUriParameters = {
   client_id: process.env.CLIENT_ID,
   response_type: 'token',
   scope: jssdkscopes.join(' '),
-  redirect_uri: encodeURI('http://localhost:3000/'),
+  redirect_uri: encodeURI(uri),
   show_dialog: true,
 }
 
