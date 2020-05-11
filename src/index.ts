@@ -46,6 +46,10 @@ function authenticate(callback) {
 authenticate(() => console.log('connected'));
 
 const app = express()
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+server.listen(50);
 
 app.use(json())
 app.use(authentification(['/user']))
@@ -79,3 +83,17 @@ app.listen(port, () => {
     console.log('🚀 Server is running')
 })
 
+io.on('connection', (socket) => {
+    console.log('a user connected');
+
+    io.emit('chat message', {username: "Elvis P", text: "I love you friend !"});
+
+    socket.on('chat message', (data) => {
+        console.log(data);
+        io.emit('chat message', data);
+    })
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});

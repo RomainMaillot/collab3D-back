@@ -38,6 +38,9 @@ function authenticate(callback) {
 }
 authenticate(() => console.log('connected'));
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+server.listen(50);
 app.use(body_parser_1.json());
 app.use(middlewares_1.authentification(['/user']));
 app.use(cors());
@@ -62,5 +65,16 @@ app.post('/user', (req, res) => {
 });
 app.listen(port, () => {
     console.log('🚀 Server is running');
+});
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    io.emit('chat message', { username: "Elvis P", text: "I love you friend !" });
+    socket.on('chat message', (data) => {
+        console.log(data);
+        io.emit('chat message', data);
+    });
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
 });
 //# sourceMappingURL=index.js.map
