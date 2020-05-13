@@ -68,10 +68,18 @@ app.listen(port, () => {
 });
 io.on('connection', (socket) => {
     console.log('a user connected');
-    io.emit('chat message', { username: "Elvis P", text: "I love you friend !" });
+    io.emit('chat message', { username: "New User", text: "Connected" });
     socket.on('chat message', (data) => {
         console.log(data);
-        io.emit('chat message', data);
+        if (data.room) {
+            socket.to(data.room).emit('chat message', data);
+        }
+        else {
+            io.emit('chat message', data);
+        }
+    });
+    socket.on('create', function (room) {
+        socket.join(room);
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
