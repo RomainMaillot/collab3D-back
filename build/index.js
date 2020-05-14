@@ -68,7 +68,6 @@ app.listen(port, () => {
 });
 io.on('connection', (socket) => {
     console.log('a user connected');
-    io.emit('chat message', { username: "New User", text: "Connected" });
     socket.on('chat message', (data) => {
         console.log(data);
         if (data.room) {
@@ -83,7 +82,6 @@ io.on('connection', (socket) => {
     });
     socket.on('disconnect', (user) => {
         console.log('user disconnected', user);
-        io.emit('chat message', { username: "User", text: "Disconnected" });
     });
 });
 //# sourceMappingURL=index.js.map
