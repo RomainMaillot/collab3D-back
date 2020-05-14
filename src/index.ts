@@ -101,7 +101,8 @@ io.on('connection', (socket) => {
         socket.join(room)
     });
 
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
+    socket.on('disconnect', (user) => {
+        console.log('user disconnected', user);
+        io.emit('chat message', {username: "User", text: "Disconnected"});
     });
 });
