@@ -47,9 +47,7 @@ authenticate(() => console.log('connected'));
 
 const app = express()
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
-
-server.listen(process.env.PORT ? 80 : 50);
+const io = require('socket.io')(server, { origins: '*:*'});
 
 app.use(json())
 app.use(authentification(['/user']))
@@ -79,10 +77,6 @@ app.post('/user', (req, res) => {
     res.send('ok')
 })
 
-app.listen(port, () => {
-    console.log('🚀 Server is running')
-})
-
 io.on('connection', (socket) => {
     console.log('a user connected');
 
@@ -103,3 +97,7 @@ io.on('connection', (socket) => {
         console.log('user disconnected', user);
     });
 });
+
+server.listen(port, () => {
+    console.log('🚀 Server is running')
+})
