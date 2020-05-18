@@ -76,6 +76,15 @@ io.on('connection', (socket) => {
     socket.on('create', function (room) {
         socket.join(room);
     });
+    socket.on('resume', function (data) {
+        socket.to(data.room).emit('resume', data);
+    });
+    socket.on('pause', function (data) {
+        socket.to(data.room).emit('pause', data);
+    });
+    socket.on('changeSong', function (data) {
+        socket.to(data.room).emit('changeSong', data);
+    });
     socket.on('disconnect', (user) => {
         console.log('user disconnected', user);
     });
