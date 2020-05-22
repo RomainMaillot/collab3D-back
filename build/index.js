@@ -76,6 +76,10 @@ io.on('connection', (socket) => {
     socket.on('create', function (room) {
         socket.join(room);
     });
+    socket.on('join', function (room) {
+        socket.join(room);
+        socket.to(room).emit('user-join');
+    });
     socket.on('resume', function (data) {
         socket.to(data.room).emit('resume', data);
     });
