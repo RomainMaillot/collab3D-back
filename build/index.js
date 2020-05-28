@@ -89,8 +89,12 @@ io.on('connection', (socket) => {
     socket.on('changeSong', function (data) {
         socket.to(data.room).emit('changeSong', data);
     });
-    socket.on('disconnect', (user) => {
-        console.log('user disconnected', user);
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+    socket.on('disconnecting', () => {
+        let room = Object.keys(socket.rooms)[0];
+        socket.to(room).emit('user-leave');
     });
 });
 server.listen(port, () => {
