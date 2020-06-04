@@ -14,7 +14,7 @@ let spotifyApi = new SpotifyWebApi({
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
 });
-const jssdkscopes = ["streaming", "user-read-email", "user-read-private", "user-modify-playback-state", "user-library-read"];
+const jssdkscopes = ["streaming", "user-read-email", "user-read-private", "user-modify-playback-state", "user-library-read", "user-read-currently-playing"];
 const redirectUriParameters = {
     client_id: process.env.CLIENT_ID,
     response_type: 'token',
@@ -85,8 +85,12 @@ io.on('connection', (socket) => {
     socket.on('changeSong', function (data) {
         socket.to(data.room).emit('changeSong', data);
     });
-    socket.on('disconnect', (user) => {
-        console.log('user disconnected', user);
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+    socket.on('disconnecting', () => {
+        let room = Object.keys(socket.rooms)[0];
+        socket.to(room).emit('user-leave');
     });
 });
 server.listen(port, () => {
