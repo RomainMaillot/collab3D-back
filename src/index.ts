@@ -110,6 +110,18 @@ io.on('connection', (socket) => {
         socket.to(data.room).emit('changeSong', data);
     });
 
+    socket.on('addToQueue', function(data) {
+        socket.to(data.room).emit('addToQueue', data);
+    });
+
+    socket.on('nextSong', function(data) {
+        socket.to(data.room).emit('nextSong');
+    });
+
+    socket.on('previousSong', function(data) {
+        socket.to(data.room).emit('previousSong');
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
