@@ -17,7 +17,7 @@ let spotifyApi = new SpotifyWebApi({
     clientSecret : process.env.CLIENT_SECRET,
 });
 
-const jssdkscopes = ["streaming", "user-read-email", "user-read-private", "user-modify-playback-state", "user-library-read"];
+const jssdkscopes = ["streaming", "user-read-email", "user-read-private", "user-modify-playback-state", "user-library-read", "user-read-currently-playing"];
 const redirectUriParameters = {
   client_id: process.env.CLIENT_ID,
   response_type: 'token',
@@ -53,29 +53,11 @@ app.use(json())
 app.use(authentification(['/user']))
 app.use(cors())
 
-app.get('/', (req, res) => {
-    console.log(req)
-    res.send('Hello World')
-})
-
-app.get('/user/:id', (req, res) => {
-    res.send(`Hello World ${req.params.id}`)
-})
-
-app.get('/getName', (req, res) => {
-    res.send('Romain')
-})
-
 app.get("/spotifyRedirectUri", function (request, response) {
     response.send(JSON.stringify({
       redirectUri
     }, null, 2))
 });
-
-app.post('/user', (req, res) => {
-    console.log(req.body)
-    res.send('ok')
-})
 
 io.on('connection', (socket) => {
     console.log('a user connected');
