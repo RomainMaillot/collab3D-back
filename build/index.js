@@ -114,6 +114,11 @@ io.on('connection', (socket) => {
     socket.on('disconnecting', () => {
         let room = Object.keys(socket.rooms)[0];
         socket.to(room).emit('user-leave');
+        if (matrixMap.get(room)) {
+            const dj = matrixMap.get(room).dj;
+            const user = matrixMap.get(room).user - 1;
+            matrixMap.set(room, { dj: dj, user: user });
+        }
     });
 });
 server.listen(port, () => {
