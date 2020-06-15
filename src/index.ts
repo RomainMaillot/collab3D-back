@@ -11,6 +11,8 @@ dotenv.config()
 
 const port = process.env.PORT || 9000;
 const uri = process.env.PORT ? 'https://3d-dj.netlify.app/' : 'http://localhost:3000/'
+// create matrix map
+let matrixMap = new Map();
 
 let spotifyApi = new SpotifyWebApi({
     clientId : process.env.CLIENT_ID,
@@ -59,6 +61,10 @@ app.get("/spotifyRedirectUri", function (request, response) {
     }, null, 2))
 });
 
+app.get("/getDj/:room", function (request, response) {
+    response.send(matrixMap.get(request.params.room))
+});
+
 io.on('connection', (socket) => {
     console.log('a user connected');
 
@@ -73,6 +79,8 @@ io.on('connection', (socket) => {
 
     socket.on('create', function(room) {
         socket.join(room)
+        // set a matrix for a room
+        matrixMap.set(room, {dj: 1})
     });
 
     socket.on('join', function(room) {
@@ -107,11 +115,15 @@ io.on('connection', (socket) => {
     socket.on('to-audience', function(data) {
         socket.to(data.room).emit('user-join');
         socket.to(data.room).emit('dj-leave', data.numberDj);
+        const dj = matrixMap.get(data.room).dj - 1
+        matrixMap.set(data.room, {dj: dj})
     });
 
     socket.on('to-dj', function(data) {
         socket.to(data.room).emit('user-leave');
         socket.to(data.room).emit('dj-join', data.numberDj);
+        const dj = matrixMap.get(data.room).dj + 1
+        matrixMap.set(data.room, {dj: dj})
     });
 
     socket.on('disconnect', () => {
