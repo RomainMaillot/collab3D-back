@@ -67,11 +67,14 @@ io.on('connection', (socket) => {
     socket.on('create', function (room) {
         socket.join(room);
         // set a matrix for a room
-        matrixMap.set(room, { dj: 1 });
+        matrixMap.set(room, { dj: 1, user: 1 });
     });
     socket.on('join', function (room) {
         socket.join(room);
         socket.to(room).emit('user-join');
+        const dj = matrixMap.get(room).dj;
+        const user = matrixMap.get(room).user + 1;
+        matrixMap.set(room, { dj: dj, user: user });
     });
     socket.on('resume', function (data) {
         socket.to(data.room).emit('resume', data);
@@ -93,15 +96,17 @@ io.on('connection', (socket) => {
     });
     socket.on('to-audience', function (data) {
         socket.to(data.room).emit('user-join');
-        socket.to(data.room).emit('dj-leave', data.numberDj);
+        socket.to(data.room).emit('dj-leave', data);
         const dj = matrixMap.get(data.room).dj - 1;
-        matrixMap.set(data.room, { dj: dj });
+        const user = matrixMap.get(data.room).user;
+        matrixMap.set(data.room, { dj: dj, user: user });
     });
     socket.on('to-dj', function (data) {
         socket.to(data.room).emit('user-leave');
-        socket.to(data.room).emit('dj-join', data.numberDj);
+        socket.to(data.room).emit('dj-join', data);
         const dj = matrixMap.get(data.room).dj + 1;
-        matrixMap.set(data.room, { dj: dj });
+        const user = matrixMap.get(data.room).user;
+        matrixMap.set(data.room, { dj: dj, user: user });
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
