@@ -99,26 +99,37 @@ io.on('connection', (socket) => {
         const user = matrixMap.get(data.room).user;
         matrixMap.set(data.room, { dj: dj, user: user });
         socket.to(data.room).emit('user-join');
-        socket.to(data.room).emit('dj-leave', data);
+        socket.to(data.room).emit('dj-leave');
     });
     socket.on('to-dj', function (data) {
         const dj = matrixMap.get(data.room).dj + 1;
         const user = matrixMap.get(data.room).user;
         matrixMap.set(data.room, { dj: dj, user: user });
         socket.to(data.room).emit('user-leave');
-        socket.to(data.room).emit('dj-join', data);
+        socket.to(data.room).emit('dj-join');
+    });
+    socket.on('leave', function (data) {
+        console.log(data);
+        // Whe  someone in audience or dj leave
+        if (data.role === "audience") {
+            if (matrixMap.get(data.room)) {
+                const dj = matrixMap.get(data.room).dj;
+                const user = matrixMap.get(data.room).user - 1;
+                matrixMap.set(data.room, { dj: dj, user: user });
+                socket.to(data.room).emit('user-leave');
+            }
+        }
+        else if (data.role === "dj") {
+            if (matrixMap.get(data.room)) {
+                const dj = matrixMap.get(data.room).dj - 1;
+                const user = matrixMap.get(data.room).user - 1;
+                matrixMap.set(data.room, { dj: dj, user: user });
+                socket.to(data.room).emit('dj-leave');
+            }
+        }
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
-    });
-    socket.on('disconnecting', () => {
-        let room = Object.keys(socket.rooms)[0];
-        socket.to(room).emit('user-leave');
-        if (matrixMap.get(room)) {
-            const dj = matrixMap.get(room).dj;
-            const user = matrixMap.get(room).user - 1;
-            matrixMap.set(room, { dj: dj, user: user });
-        }
     });
 });
 server.listen(port, () => {
