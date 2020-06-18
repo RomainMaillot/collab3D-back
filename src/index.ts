@@ -85,9 +85,8 @@ io.on('connection', (socket) => {
 
     socket.on('join', function(room) {
         socket.join(room)
-        const dj = matrixMap.get(room).dj
         const user = matrixMap.get(room).user + 1
-        matrixMap.set(room, {dj: dj, user: user})
+        matrixMap.set(room, {...matrixMap.get(room), user: user})
         socket.to(room).emit('user-join');
     });
 
@@ -117,16 +116,14 @@ io.on('connection', (socket) => {
 
     socket.on('to-audience', function(data) {
         const dj = matrixMap.get(data.room).dj - 1
-        const user = matrixMap.get(data.room).user
-        matrixMap.set(data.room, {dj: dj, user: user})
+        matrixMap.set(data.room, {...matrixMap.get(data.room), dj: dj})
         socket.to(data.room).emit('user-join');
         socket.to(data.room).emit('dj-leave');
     });
 
     socket.on('to-dj', function(data) {
         const dj = matrixMap.get(data.room).dj + 1
-        const user = matrixMap.get(data.room).user
-        matrixMap.set(data.room, {dj: dj, user: user})
+        matrixMap.set(data.room, {...matrixMap.get(data.room), dj: dj})
         socket.to(data.room).emit('user-leave');
         socket.to(data.room).emit('dj-join');
     });
@@ -136,16 +133,15 @@ io.on('connection', (socket) => {
         // Whe  someone in audience or dj leave
         if(data.role === "audience") {
             if(matrixMap.get(data.room)) {
-                const dj = matrixMap.get(data.room).dj
                 const user = matrixMap.get(data.room).user - 1
-                matrixMap.set(data.room, {dj: dj, user: user})
+                matrixMap.set(data.room, {...matrixMap.get(data.room), user: user})
                 socket.to(data.room).emit('user-leave');
             }
         } else if(data.role === "dj") {
             if(matrixMap.get(data.room)) {
                 const dj = matrixMap.get(data.room).dj - 1
                 const user = matrixMap.get(data.room).user - 1
-                matrixMap.set(data.room, {dj: dj, user: user})
+                matrixMap.set(data.room, {...matrixMap.get(data.room), dj: dj, user: user})
                 socket.to(data.room).emit('dj-leave');
             }
         }
