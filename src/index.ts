@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
     socket.on('create', function(room) {
         socket.join(room)
         // set a matrix for a room
-        matrixMap.set(room, {dj: 1, user: 1})
+        matrixMap.set(room, {dj: 1, user: 1, queue: []})
     });
 
     socket.on('join', function(room) {
@@ -104,10 +104,15 @@ io.on('connection', (socket) => {
 
     socket.on('addToQueue', function(data) {
         socket.to(data.room).emit('addToQueue', data);
+        const queue = [...matrixMap.get(data.room).queue, data.song];
+        matrixMap.set(data.room, {...matrixMap.get(data.room), queue: queue});
     });
 
     socket.on('nextSong', function(data) {
-        socket.to(data.room).emit('nextSong');
+        const queue = matrixMap.get(data.room).queue;
+        queue.shift()
+        socket.to(data.room).emit('nextSong', queue);
+        matrixMap.set(data.room, {...matrixMap.get(data.room), queue: queue});
     });
 
     socket.on('previousSong', function(data) {
