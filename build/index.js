@@ -83,6 +83,7 @@ io.on('connection', (socket) => {
     });
     socket.on('changeSong', function (data) {
         socket.to(data.room).emit('changeSong', data);
+        matrixMap.set(data.room, Object.assign(Object.assign({}, matrixMap.get(data.room)), { currently_playing: data.song }));
     });
     socket.on('addToQueue', function (data) {
         socket.to(data.room).emit('addToQueue', data);
@@ -91,9 +92,9 @@ io.on('connection', (socket) => {
     });
     socket.on('nextSong', function (data) {
         const queue = matrixMap.get(data.room).queue;
-        queue.shift();
+        const current = queue.shift();
         socket.to(data.room).emit('nextSong', queue);
-        matrixMap.set(data.room, Object.assign(Object.assign({}, matrixMap.get(data.room)), { queue: queue }));
+        matrixMap.set(data.room, Object.assign(Object.assign({}, matrixMap.get(data.room)), { queue: queue, currently_playing: current }));
     });
     socket.on('previousSong', function (data) {
         socket.to(data.room).emit('previousSong');
