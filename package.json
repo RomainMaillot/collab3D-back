@@ -18,7 +18,7 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.2",
     "querystring": "^0.2.0",
-    "socket.io": "^2.3.0",
+    "socket.io": "^4.0.2",
     "spotify-web-api-node": "^4.0.0",
     "typescript": "^3.7.5"
   },
