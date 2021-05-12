@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
     });
     socket.on('join', function (room) {
         socket.join(room);
+        console.log(room);
         const user = matrixMap.get(room).user + 1;
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { user: user }));
     });
