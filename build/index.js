@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
         socket.join(room);
         console.log('roomKey: ', room);
         // set a matrix for a room
-        matrixMap.set(room, { user: 1, sceneData: { objectPosition: [2, 0, 2] } });
+        matrixMap.set(room, { user: 1, sceneData: { objects: [] } });
     });
     socket.on('join', function (room) {
         socket.join(room);
@@ -42,6 +42,21 @@ io.on('connection', (socket) => {
         const objectPosition = matrixMap.get(room).sceneData.objectPosition;
         objectPosition[1]++;
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objectPosition } }));
+        socket.to(room).emit('updateDatas', matrixMap.get(room));
+    });
+    socket.on('objectMoved', function (room, objectPosition, objectId) {
+        const objects = matrixMap.get(room).sceneData.objects;
+        let addObject = 0;
+        for (const object of objects) {
+            if (object.objectId == objectId) {
+                object.objectPosition = objectPosition;
+                addObject++;
+            }
+        }
+        if (addObject === 0) {
+            objects.push({ objectPosition, objectId });
+        }
+        matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('updateDatas', matrixMap.get(room));
     });
     socket.on('disconnect', () => {
