@@ -38,12 +38,6 @@ io.on('connection', (socket) => {
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { user: user }));
         socket.to(room).emit('send roomInfos', matrixMap.get(room));
     });
-    socket.on('moveX', function (room) {
-        const objectPosition = matrixMap.get(room).sceneData.objectPosition;
-        objectPosition[1]++;
-        matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objectPosition } }));
-        socket.to(room).emit('updateDatas', matrixMap.get(room));
-    });
     socket.on('objectMoved', function (room, objectPosition, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
         let addObject = 0;
