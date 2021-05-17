@@ -43,7 +43,11 @@ io.on('connection', (socket) => {
         socket.join(room)
         const user = matrixMap.get(room).user + 1
         matrixMap.set(room, {...matrixMap.get(room), user: user})
-        socket.to(room).emit('send roomInfos', matrixMap.get(room))
+        socket.to(room).emit('userJoined', socket.id)
+    });
+
+    socket.on('initDatas', function(room, userId) {
+        socket.to(userId).emit('initRoomData', matrixMap.get(room))
     });
 
     socket.on('addObject', function(room, objectId) {
