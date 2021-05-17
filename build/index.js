@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
     });
     socket.on('addObject', function (room, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
-        objects.push({ objectPosition: { x: 0, y: 0, z: 0 }, objectId });
+        objects.push({ objectMoved: {}, objectId });
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('addObjectRoom');
     });
@@ -55,20 +55,20 @@ io.on('connection', (socket) => {
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('deleteObjectInRoom', objectId);
     });
-    socket.on('objectMoved', function (room, objectPosition, objectId) {
+    socket.on('objectMoved', function (room, objectMoved, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
         let addObject = 0;
         for (const object of objects) {
             if (object.objectId == objectId) {
-                object.objectPosition = objectPosition;
+                object.objectMoved = objectMoved;
                 addObject++;
             }
         }
         if (addObject === 0) {
-            objects.push({ objectPosition, objectId });
+            objects.push({ objectMoved, objectId });
         }
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
-        socket.to(room).emit('updateDatas', matrixMap.get(room));
+        socket.to(room).emit('updateDatas', objectMoved, objectId);
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
