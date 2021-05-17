@@ -8,7 +8,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const port = process.env.PORT || 9000;
-const uri = process.env.PORT ? 'https://prod-url/' : 'http://localhost:8080'
+const uri = process.env.PORT ? 'https://euclide.netlify.app/' : 'http://localhost:8080'
 // create matrix map
 let matrixMap = new Map();
 
