@@ -38,6 +38,20 @@ io.on('connection', (socket) => {
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { user: user }));
         socket.to(room).emit('send roomInfos', matrixMap.get(room));
     });
+    socket.on('addObject', function (room, objectId) {
+        const objects = matrixMap.get(room).sceneData.objects;
+        objects.push({ objectPosition: { x: 0, y: 0, z: 0 }, objectId });
+        matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
+        socket.to(room).emit('addObjectRoom');
+    });
+    socket.on('deleteObject', function (room, objectId) {
+        const objects = matrixMap.get(room).sceneData.objects;
+        objects.filter(object => {
+            return object.objectId !== objectId;
+        });
+        matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
+        socket.to(room).emit('deleteObjectInRoom', objectId);
+    });
     socket.on('objectMoved', function (room, objectPosition, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
         let addObject = 0;
