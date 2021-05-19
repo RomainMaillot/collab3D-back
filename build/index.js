@@ -41,9 +41,9 @@ io.on('connection', (socket) => {
     socket.on('initDatas', function (room, userId) {
         socket.to(userId).emit('initRoomData', matrixMap.get(room));
     });
-    socket.on('addObject', function (room, objectId) {
+    socket.on('addObject', function (room, objectMoved, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
-        objects.push({ objectMoved: {}, objectId });
+        objects.push({ objectMoved, objectId });
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('addObjectRoom');
     });
@@ -69,6 +69,12 @@ io.on('connection', (socket) => {
         }
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('updateDatas', objectMoved, objectId);
+    });
+    socket.on('objectStart', (room, objectId) => {
+        socket.to(room).emit('startMoving', objectId, socket.id);
+    });
+    socket.on('objectStop', (room, objectId) => {
+        socket.to(room).emit('stopMoving', objectId, socket.id);
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
