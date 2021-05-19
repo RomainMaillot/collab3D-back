@@ -83,6 +83,10 @@ io.on('connection', (socket) => {
         socket.to(room).emit('updateDatas', objectMoved, objectId)
     })
 
+    socket.on('changeColor', function(room, color, objectId) {
+        socket.to(room).emit('updateColor', color, objectId)
+    })
+
     socket.on('objectStart', (room, objectId) => {
         socket.to(room).emit('startMoving', objectId, socket.id)
     })
