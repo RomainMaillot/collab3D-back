@@ -51,9 +51,9 @@ io.on('connection', (socket) => {
         socket.to(userId).emit('initRoomData', matrixMap.get(room))
     });
 
-    socket.on('addObject', function(room, objectId) {
+    socket.on('addObject', function(room, objectMoved, objectId) {
         const objects = matrixMap.get(room).sceneData.objects
-        objects.push({objectMoved: {}, objectId})
+        objects.push({objectMoved, objectId})
         matrixMap.set(room, {...matrixMap.get(room), sceneData: {objects}})
         socket.to(room).emit('addObjectRoom')
     })
@@ -81,10 +81,6 @@ io.on('connection', (socket) => {
         }
         matrixMap.set(room, {...matrixMap.get(room), sceneData: {objects}})
         socket.to(room).emit('updateDatas', objectMoved, objectId)
-    })
-
-    socket.on('changeColor', function(room, color, objectId) {
-        socket.to(room).emit('updateColor', color, objectId)
     })
 
     socket.on('objectStart', (room, objectId) => {
