@@ -3,6 +3,7 @@ import { json } from 'body-parser'
 import * as cors from 'cors'
 
 import { authentification } from './middlewares'
+import { Socket } from 'dgram'
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -16,7 +17,7 @@ const app = express()
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
     cors: {
-      origin: '*:*',
+      origin: '*',
       methods: ["GET", "POST"]
     }
   })
@@ -80,6 +81,14 @@ io.on('connection', (socket) => {
         }
         matrixMap.set(room, {...matrixMap.get(room), sceneData: {objects}})
         socket.to(room).emit('updateDatas', objectMoved, objectId)
+    })
+
+    socket.on('objectStart', (room, objectId) => {
+        socket.to(room).emit('startMoving', objectId, socket.id)
+    })
+
+    socket.on('objectStop', (room, objectId) => {
+        socket.to(room).emit('stopMoving', objectId, socket.id)
     })
 
     socket.on('disconnect', () => {

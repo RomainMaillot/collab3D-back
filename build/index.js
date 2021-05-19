@@ -14,7 +14,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: '*:*',
+        origin: '*',
         methods: ["GET", "POST"]
     }
 });
@@ -69,6 +69,12 @@ io.on('connection', (socket) => {
         }
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('updateDatas', objectMoved, objectId);
+    });
+    socket.on('objectStart', (room, objectId) => {
+        socket.to(room).emit('startMoving', objectId, socket.id);
+    });
+    socket.on('objectStop', (room, objectId) => {
+        socket.to(room).emit('stopMoving', objectId, socket.id);
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
