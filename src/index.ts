@@ -56,6 +56,7 @@ io.on('connection', (socket) => {
         objects.push({objectMoved, objectId})
         matrixMap.set(room, {...matrixMap.get(room), sceneData: {objects}})
         socket.to(room).emit('addObjectRoom', objectType)
+        console.log(objects)
     })
 
     socket.on('deleteObject', function(room, objectId) {
@@ -92,6 +93,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
+        socket.to('test').emit('userDisconnected', socket.id)
         console.log('user disconnected');
     });
 });
