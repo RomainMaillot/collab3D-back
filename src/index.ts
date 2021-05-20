@@ -51,11 +51,11 @@ io.on('connection', (socket) => {
         socket.to(userId).emit('initRoomData', matrixMap.get(room))
     });
 
-    socket.on('addObject', function(room, objectMoved, objectId) {
+    socket.on('addObject', function(room, objectType, objectMoved, objectId) {
         const objects = matrixMap.get(room).sceneData.objects
         objects.push({objectMoved, objectId})
         matrixMap.set(room, {...matrixMap.get(room), sceneData: {objects}})
-        socket.to(room).emit('addObjectRoom')
+        socket.to(room).emit('addObjectRoom', objectType)
     })
 
     socket.on('deleteObject', function(room, objectId) {

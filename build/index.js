@@ -41,11 +41,11 @@ io.on('connection', (socket) => {
     socket.on('initDatas', function (room, userId) {
         socket.to(userId).emit('initRoomData', matrixMap.get(room));
     });
-    socket.on('addObject', function (room, objectMoved, objectId) {
+    socket.on('addObject', function (room, objectType, objectMoved, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
         objects.push({ objectMoved, objectId });
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
-        socket.to(room).emit('addObjectRoom');
+        socket.to(room).emit('addObjectRoom', objectType);
     });
     socket.on('deleteObject', function (room, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
