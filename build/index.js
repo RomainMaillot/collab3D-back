@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
         objects.push({ objectMoved, objectId });
         matrixMap.set(room, Object.assign(Object.assign({}, matrixMap.get(room)), { sceneData: { objects } }));
         socket.to(room).emit('addObjectRoom', objectType);
+        console.log(objects);
     });
     socket.on('deleteObject', function (room, objectId) {
         const objects = matrixMap.get(room).sceneData.objects;
