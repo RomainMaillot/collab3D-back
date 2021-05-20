@@ -77,6 +77,7 @@ io.on('connection', (socket) => {
         socket.to(room).emit('stopMoving', objectId, socket.id);
     });
     socket.on('disconnect', () => {
+        socket.to('test').emit('userDisconnected', socket.id);
         console.log('user disconnected');
     });
 });
